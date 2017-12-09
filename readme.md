@@ -7,8 +7,8 @@ BATT (Block All The Things) is a [WebExtension](https://developer.mozilla.org/en
 ## User features
 
 - [ ] Options
-- [x] `0.1.x` Log requests
-- [x] `0.1.x` Log responses
+- [x] `0.1.x` Log requests [#1][i1]
+- [x] `0.1.x` Log responses [#1][i1]
 - [ ] Log content
 - [ ] Block requests
 - [ ] Block responses
@@ -17,6 +17,8 @@ BATT (Block All The Things) is a [WebExtension](https://developer.mozilla.org/en
 - [ ] Modify responses
 - [ ] Modify content
 - [ ] Documentation
+
+[i1]: https://github.com/oskude/batt/issues/1
 
 ## Developer features
 
