@@ -8,12 +8,20 @@ const events = [
 	{ name: "BeforeRedirect",    specs: ["responseHeaders"] },
 	{ name: "Completed",         specs: ["responseHeaders"] }
 ];
+const requests = [];
 
 function log (event, data)
 {
-	console.groupCollapsed(data.requestId, event);
-	console.info(data);
-	console.groupEnd();
+	if (!requests[data.requestId]) {
+		requests[data.requestId] = [{
+			[event]: data
+		}];
+		console.groupCollapsed(data.requestId, data.method);
+		console.info(requests[data.requestId]);
+		console.groupEnd();
+	} else {
+		requests[data.requestId].push({[event]: data});
+	}
 }
 
 events.forEach((event)=>{
