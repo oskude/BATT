@@ -13,14 +13,12 @@ const requests = [];
 function log (event, data)
 {
 	if (!requests[data.requestId]) {
-		requests[data.requestId] = [{
-			[event]: data
-		}];
-		console.groupCollapsed(data.requestId, data.method);
-		console.info(requests[data.requestId]);
+		requests[data.requestId] = {};
+		console.groupCollapsed(data.requestId, data.method, data.url);
+		console.table(requests[data.requestId]);
 		console.groupEnd();
 	} else {
-		requests[data.requestId].push({[event]: data});
+		requests[data.requestId][event] = data;
 	}
 }
 
