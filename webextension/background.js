@@ -6,7 +6,8 @@ const events = [
 	{ name: "AuthRequired",      specs: ["responseHeaders"] },
 	{ name: "ResponseStarted",   specs: ["responseHeaders"] },
 	{ name: "BeforeRedirect",    specs: ["responseHeaders"] },
-	{ name: "Completed",         specs: ["responseHeaders"] }
+	{ name: "Completed",         specs: ["responseHeaders"] },
+	{ name: "ErrorOccurred",     specs: undefined }
 ];
 const requests = [];
 
@@ -23,20 +24,22 @@ function log (event, data)
 }
 
 events.forEach((event)=>{
-	chrome.webRequest[`on${event.name}`].addListener(
-		(data)=>{
-			log(event.name, data);
-		},{
-			urls: ["<all_urls>"]
-		},
-		event.specs
-	);
-});
-
-chrome.webRequest.onErrorOccurred.addListener(
-	(data)=>{
-		log("ErrorOccurred", data);
-	},{
-		urls: ["<all_urls>"]
+	if (event.specs) {
+		chrome.webRequest[`on${event.name}`].addListener(
+			(data)=>{
+				log(event.name, data);
+			},{
+				urls: ["<all_urls>"]
+			},
+			event.specs
+		);
+	} else {
+		chrome.webRequest[`on${event.name}`].addListener(
+			(data)=>{
+				log(event.name, data);
+			},{
+				urls: ["<all_urls>"]
+			}
+		);
 	}
-);
+});
