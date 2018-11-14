@@ -1,3 +1,4 @@
+const urls = ["<all_urls>"];
 const events = [
 	{ name: "BeforeRequest",     specs: ["requestBody"] },
 	{ name: "BeforeSendHeaders", specs: ["requestHeaders"] },
@@ -9,37 +10,32 @@ const events = [
 	{ name: "Completed",         specs: ["responseHeaders"] },
 	{ name: "ErrorOccurred",     specs: undefined }
 ];
-const requests = [];
 
-function log (event, data)
+var devtoolsPort;
+
+function log (type, name, data)
 {
-	if (!requests[data.requestId]) {
-		requests[data.requestId] = {};
-		console.groupCollapsed(data.requestId, data.method, data.url);
-		console.table(requests[data.requestId]);
-		console.groupEnd();
-	} else {
-		requests[data.requestId][event] = data;
+	if (devtoolsPort) {
+		devtoolsPort.postMessage({
+			type: type,
+			name: name,
+			data: data
+		});
 	}
 }
 
+
 events.forEach((event)=>{
+	// TODO: is there a way to avoid this `if`?
 	if (event.specs) {
 		chrome.webRequest[`on${event.name}`].addListener(
-			(data)=>{
-				log(event.name, data);
-			},{
-				urls: ["<all_urls>"]
-			},
-			event.specs
+			data=>log("request/event", event.name, data), {urls: urls}, event.specs
 		);
 	} else {
 		chrome.webRequest[`on${event.name}`].addListener(
-			(data)=>{
-				log(event.name, data);
-			},{
-				urls: ["<all_urls>"]
-			}
+			data=>log("request/event", event.name, data), {urls: urls}
 		);
 	}
 });
+
+browser.runtime.onConnect.addListener(port=>devtoolsPort=port);
